@@ -1,0 +1,24 @@
+CREATE TABLE Students (
+Pesel VARCHAR(11) PRIMARY KEY,
+Name VARCHAR(64),
+Surname VARCHAR(64)
+);
+
+CREATE TABLE Teachers(
+Pesel VARCHAR(11) PRIMARY KEY,
+Name VARCHAR(64),
+Surname VARCHAR(64),
+Degree VARCHAR(16)
+);
+
+CREATE TABLE Courses(
+Name VARCHAR(256) PRIMARY KEY,
+ETCS INT
+);
+
+CREATE TABLE Grades(
+Student_Pesel VARCHAR(11) REFERENCES Students NOT NULL,
+Course_Name VARCHAR(256) REFERENCES Courses NOT NULL,
+Grade INT,
+PRIMARY KEY (Student_Pesel, Course_Name)
+);
