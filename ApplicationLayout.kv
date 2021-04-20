@@ -1,0 +1,263 @@
+ScreenManager:
+    roleLoginScreen:
+    loginScreen: 
+    signupScreen: 
+    StudentScreen:
+    TeacherScreen:
+    AdminScreen:
+
+<roleLoginScreen>:
+    info : info 
+    FloatLayout: 
+        Label: 
+            id : info 
+            size_hint : 0.8, 0.2
+            pos_hint : {"x" : 0.15, "top" : 0.95} 
+            text : "LOG IN AS ..."
+        Button:
+            text : "Student"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.33, "top" : 0.8}
+            on_release:
+                root.click_student()
+                app.root.current = 'login_screen'
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Teacher"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.33, "top" : 0.65}
+            on_release:
+                root.click_teacher()
+                app.root.current = 'login_screen'
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Admin"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.33, "top" : 0.5}
+            on_release:
+                root.click_admin()
+                app.root.current = 'login_screen'
+                root.manager.transition.direction = "left"
+        Label: 
+            id : info 
+            size_hint : 0.8, 0.2
+            pos_hint : {"x" : 0.15, "top" : 0.35} 
+            text : "... OR CREATE AN ACCOUNT"
+        Button: 
+            text : "Create an account"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.33, "top" : 0.2} 
+            on_release:  
+                app.root.current = 'signup_screen'
+                root.manager.transition.direction = "left"
+
+<loginScreen>: 
+    login : login
+    password : password
+    FloatLayout: 
+        size: root.width, root.height 
+        Label: 
+            text : "LOGIN: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.75} 
+        TextInput: 
+            id : login 
+            multiline :False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.75} 
+        Label: 
+            text : "PASSWORD: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.58}
+        TextInput: 
+            id : password
+            multiline :False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.58}
+        Button: 
+            text : "LOGIN"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.39, "top" : 0.35} 
+            on_release:  
+                root.login_btn_clicked()
+                root.manager.transition.direction = "up"
+
+<signupScreen>: 
+    login : login
+    password : password
+    repeat_password : repeat_password
+    role : role
+    FloatLayout: 
+        Label: 
+            text : "NAME: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.9} 
+        TextInput: 
+            id : login
+            multiline : False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.9} 
+        Label: 
+            text : "PASSWORD: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.75} 
+        TextInput: 
+            id : password
+            multiline : False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.75}
+        Label: 
+            text : "REPEAT PASSWORD: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.6} 
+        TextInput: 
+            id : repeat_password 
+            multiline : False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.6}
+        Label: 
+            text : "ROLE: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.45} 
+        TextInput: 
+            id : role 
+            multiline : False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.45}
+        Button: 
+            text : "SUBMIT"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.39, "top" : 0.2} 
+            on_press : 
+                root.create_account_btn_clicked()
+                root.manager.transition.direction = "right"
+
+<StudentScreen>:
+    FloatLayout: 
+        Label: 
+            text : "STUDENT SCREEN "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.9}
+
+<TeacherScreen>:
+    FloatLayout: 
+        Label: 
+            text : "TEACHER SCREEN "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.9} 
+
+<AdminScreen>:
+    GridLayout:
+        cols: 4
+
+        Label:
+            id : info
+            text : "Choose table:"
+        Label:
+            id : info
+            text : " "
+        Label:
+            id : info
+            text : "Choose CRUD operation:"
+        Label:
+            id : info
+            text : " "
+        Label:
+            text: "Students"
+        CheckBox:
+            group: "table"
+            on_press: root.handle_table_choosing(self, self.active, "Students")
+        Label:
+            text: "Create"
+        CheckBox:
+            group: "crud"
+            on_press: root.handle_CRUD_operation_choosing(self, self.active, "Create")
+        Label:
+            text: "Teachers"
+        CheckBox:
+            group: "table"
+            on_press: root.handle_table_choosing(self, self.active, "Teachers")
+        Label:
+            text: "Read"
+        CheckBox:
+            group: "crud"
+            on_press: root.handle_CRUD_operation_choosing(self, self.active, "Read")
+        Label:
+            text: "Courses"
+        CheckBox:
+            group: "table"
+            on_press: root.handle_table_choosing(self, self.active, "Courses")
+        Label:
+            text: "Update"
+        CheckBox:
+            group: "crud"
+            on_press: root.handle_CRUD_operation_choosing(self, self.active, "Update")
+        Label:
+            text: "Grades"
+        CheckBox:
+            group: "table"
+            on_press: root.handle_table_choosing(self, self.active, "Grades")
+        Label:
+            text: "Delete"
+        CheckBox:
+            group: "crud"
+            on_press: root.handle_CRUD_operation_choosing(self, self.active, "Delete")
+                
+        Button:
+            text : "LOGOUT"
+            on_release:
+                root.manager.transition.direction = "right"
+        Label:
+            id : info
+            text : " "
+        Label:
+            id : info
+            text : " "
+        Button:
+            text : "OK"
+            on_release:
+                root.submit()
+                root.manager.transition.direction = "left"
+
+
+<errorInvalidInformation>:
+    Label: 
+        text : "Please, enter valid information!"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<successLogIn>:
+    Label:
+        text : "Logged in successfully"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<successSignIn>:
+    Label:
+        text : "Registered successfully :)"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<success>:
+    Label: 
+        text : "Action finished successfully"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<errorUnknownUser>:
+    Label:
+        text : "Please, check your credentials\nand try again"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<errorUserExists>:
+    Label:
+        text : "User with this login exists.\nPlease, choose different login"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<errorInvalidRole>:
+    Label:
+        text : "This role is invalid.\nPlease, type valid role"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
