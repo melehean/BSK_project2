@@ -1,3 +1,5 @@
+USE [university];
+
 CREATE TABLE Students (
 Pesel VARCHAR(11) PRIMARY KEY,
 Name VARCHAR(64),
