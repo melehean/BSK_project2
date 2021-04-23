@@ -5,6 +5,7 @@ ScreenManager:
     StudentScreen:
     TeacherScreen:
     AdminScreen:
+    StudentDataScreen:
 
 <roleLoginScreen>:
     info : info 
@@ -135,9 +136,68 @@ ScreenManager:
 <StudentScreen>:
     FloatLayout: 
         Label: 
-            text : "STUDENT SCREEN "
+            id : info
+            size_hint : 0.8, 0.2
+            pos_hint : {"x" : 0.15, "top" : 0.95}
+            text : "WELCOME TO STUDENT MENU!"
+        Button:
+            text : "Show your personal information"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.33, "top" : 0.8}
+            on_release:
+                root.show_student_info()
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Edit your personal information"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.33, "top" : 0.65}
+            on_release:
+                root.edit_student_info()
+                app.root.current = 'student_data_screen'
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Show all students list"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.33, "top" : 0.5}
+            on_release:
+                root.show_students()
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Show grades"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.33, "top" : 0.35}
+            on_release:
+                root.show_grades()
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Logout"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.33, "top" : 0.2}
+            on_release:
+                root.logout()
+                root.manager.transition.direction = "left"
+
+
+<StudentDataScreen>:
+    new_surname : new_surname
+    FloatLayout:
+        Label:
+            text : 'SURNAME: '
             size_hint : 0.2, 0.1
-            pos_hint : {"x" : 0.25, "top" : 0.9}
+            pos_hint : {"x" : 0.25, "top" : 0.8}
+        TextInput:
+            id : new_surname
+            multiline : True
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.8}
+        Button:
+            text : "SAVE CHANGES"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.39, "top" : 0.5}
+            on_press :
+                root.save_student_info()
+                app.root.current = 'student_screen'
+                root.manager.transition.direction = "right"
 
 <TeacherScreen>:
     FloatLayout: 
@@ -206,6 +266,7 @@ ScreenManager:
         Button:
             text : "LOGOUT"
             on_release:
+                root.logout()
                 root.manager.transition.direction = "right"
         Label:
             id : info
@@ -259,5 +320,17 @@ ScreenManager:
 <errorInvalidRole>:
     Label:
         text : "This role is invalid.\nPlease, type valid role"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<successLogout>:
+    Label:
+        text : "Logout successfully"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<successDataChange>:
+    Label:
+        text : "Data changed successfully"
         size_hint : 0.1, 0.1
         pos_hint : {"x" : 0.3, "top" : 0.5}

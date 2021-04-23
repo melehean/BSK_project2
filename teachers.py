@@ -6,41 +6,55 @@ class Teachers_Table:
         print("Read All")
         cursor = self.db.cursor();
         cursor.execute('select * from Teachers')
+        result = []
         for row in cursor:
-            print(f'row = {row}')
-        print()
+            result.append(f'{row}')
+        return result
 
     def search_by_pesel(self, pesel):
         print('Search by Pesel')
         cursor = self.db.cursor();
         cursor.execute('select * from Teachers where Pesel = ?', pesel)
+        result = []
         for row in cursor:
-            print(f'row = {row}')
-        print()
+            result.append(f'{row}')
+        return result
 
     def search_by_name(self, name):
         print('Search by Name')
         cursor = self.db.cursor();
         cursor.execute('select * from Teachers where Name = ?', name)
+        result = []
         for row in cursor:
-            print(f'row = {row}')
-        print()
+            result.append(f'{row}')
+        return result
 
     def search_by_surname(self, surname):
         print('Search by Surname')
         cursor = self.db.cursor();
         cursor.execute('select * from Teachers where Surname = ?', surname)
+        result = []
         for row in cursor:
-            print(f'row = {row}')
-        print()
+            result.append(f'{row}')
+        return result
 
     def search_by_degree(self, degree):
         print('Search by Pesel')
         cursor = self.db.cursor();
         cursor.execute('select * from Teachers where Degree = ?', degree)
+        result = []
         for row in cursor:
-            print(f'row = {row}')
-        print()
+            result.append(f'{row}')
+        return result
+
+    def search_by_app_login(self, app_login):
+        print('Search by App_login')
+        cursor = self.db.cursor();
+        cursor.execute('select * from Students where App_login = ?', app_login)
+        result = []
+        for row in cursor:
+            result.append(f'{row}')
+        return result
 
     def insert(self, pesel, name, surname, degree):
         print('Insert')

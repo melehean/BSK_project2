@@ -1,6 +1,7 @@
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.app import App
+from kivy.uix.label import Label
 from kivy.lang import Builder
 
 from pop_ups import PopUpMode, popUp
@@ -10,7 +11,6 @@ import pop_ups
 
 # Class responsible for choosing user logging role
 class roleLoginScreen(Screen):
-
     def click_admin(self):
         backend.current_user.role = 'Admin'
 
@@ -26,17 +26,17 @@ class loginScreen(Screen):
     password = ObjectProperty(None)
 
     def login_btn_clicked(self):
-        print(backend.current_user.role)
         action_result = backend.validate_login(login=self.login.text, password=self.password.text)
-        print(action_result)
         if action_result == PopUpMode.SUCCESS_LOG_IN:
             user_role = backend.current_user.role.lower()
             screen_manager.current = f'{user_role}_screen'
             popUp(PopUpMode.SUCCESS_LOG_IN)
+            self.login.text = ''
+            self.password.text = ''
         else:
             popUp(action_result)
-            self.login.text = ""
-            self.password.text = ""
+            self.login.text = ''
+            self.password.text = ''
 
 # Class responsible for handling signing up and validating entered user's credentials
 class signupScreen(Screen):
@@ -63,6 +63,37 @@ class signupScreen(Screen):
             self.role.text = ''
 
 
+class StudentScreen(Screen):
+    def show_student_info(self):
+        backend.get_student_data()
+        pop_ups.currentUserInfo()
+
+    def show_students(self):
+        backend.show_students()
+
+    def show_grades(self):
+        print('Student\'s scores')
+        backend.show_grades()
+
+    def logout(self):
+        backend.current_user = backend.User()
+        screen_manager.current = 'role_login_screen'
+
+
+class StudentDataScreen(Screen):
+    new_surname = ObjectProperty(None)
+
+    def save_student_info(self):
+        backend.update_student_data(surname=self.new_surname.text)
+        self.new_surname.text = ''
+
+
+class TeacherScreen(Screen):
+    def logout(self):
+        backend.current_user = backend.User()
+        screen_manager.current = 'role_login_screen'
+
+
 class AdminScreen(Screen):
     table = ObjectProperty(None)
     crud_operation = ObjectProperty(None)
@@ -87,12 +118,11 @@ class AdminScreen(Screen):
             # execute query/show/delete etc.
             # screen_manager.current = 
 
+    def logout(self):
+        backend.current_user = backend.User()
+        screen_manager.current = 'role_login_screen'
+        popUp(PopUpMode.SUCCESS_LOGOUT)
 
-class StudentScreen(Screen):
-    pass
-
-class TeacherScreen(Screen):
-    pass
 
 
 # Setting application layout
@@ -108,8 +138,10 @@ screen_manager.add_widget(roleLoginScreen(name='role_login_screen'))
 screen_manager.add_widget(loginScreen(name='login_screen'))
 screen_manager.add_widget(signupScreen(name='signup_screen'))
 screen_manager.add_widget(StudentScreen(name='student_screen'))
+screen_manager.add_widget(StudentDataScreen(name='student_data_screen'))
 screen_manager.add_widget(TeacherScreen(name='teacher_screen'))
 screen_manager.add_widget(AdminScreen(name='admin_screen'))
+
 
 # Class responsible for handling application start up
 class DBManagementApplicationMain(App): 
