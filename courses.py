@@ -5,27 +5,30 @@ class Courses_Table:
 
     def read_all(self):
         print("Read All")
-        cursor = self.db.cursor();
+        cursor = self.db.cursor()
         cursor.execute('select * from Courses')
+        result = []
         for row in cursor:
-            print(f'row = {row}')
-        print()
+            result.append(f'{row}')
+        return result
 
     def search_by_name(self, name):
         print('Search by Name')
-        cursor = self.db.cursor();
+        cursor = self.db.cursor()
         cursor.execute('select * from Courses where Name = ?', name)
+        result = []
         for row in cursor:
-            print(f'row = {row}')
-        print()
+            result.append(f'{row}')
+        return result
 
     def search_by_etcs(self, etcs):
         print('Search by Pesel')
-        cursor = self.db.cursor();
+        cursor = self.db.cursor()
         cursor.execute('select * from Courses where ETCS = ?', etcs)
+        result = []
         for row in cursor:
-            print(f'row = {row}')
-        print()
+            result.append(f'{row}')
+        return result
 
     def insert(self, name, etcs):
         print('Insert')

@@ -1,9 +1,15 @@
+# External imports
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.textinput import TextInput
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
-import backend
 import enum
 
+# Internal imports
+import backend
+
+
+# Custom class with Enum type - all possible popup types
 class PopUpMode(enum.Enum):
     ERROR_INVALID_INFORMATION = 0
     SUCCESS_LOG_IN = 1
@@ -14,8 +20,12 @@ class PopUpMode(enum.Enum):
     ERROR_INVALID_ROLE = 6
     SUCCESS_LOGOUT = 7
     SUCCESS_DATA_CHANGE = 8
+    ERROR_USER_DOES_NOT_EXIST = 9
+    ERROR_INVALID_STUDENT_NUMBER = 10
+    ERROR_INVALID_COURSE_NAME = 11
+    SUCCES_GRADE_ADDITION = 12
 
-
+# Classes required in order to define their layout in ApplicationLayout.kv file
 class errorInvalidInformation(FloatLayout): 
     pass
 
@@ -43,13 +53,26 @@ class successLogout(FloatLayout):
 class successDataChange(FloatLayout):
     pass
 
+class errorUserDoesNotExist(FloatLayout):
+    pass
 
+class errorInvalidStudentNumber(FloatLayout):
+    pass
+
+class erorrInvalidCourseName(FloatLayout):
+    pass
+
+class successGradeAddition(FloatLayout):
+    pass
+
+
+# Handle showing currently logged student
 def currentUserInfo():
     user = backend.current_user
-    user_text = user.student_data()
+    user_text = user.user_data()
 
     popup = Popup(
-            title ='Student information',
+            title ='User information',
             content = Label(text=user_text),
             size_hint=(.5,.5), size=(100, 100)
         )
@@ -58,7 +81,7 @@ def currentUserInfo():
 
 def show_grades(grades):
     popup = Popup(
-            title ='Student\'s grades',
+            title ='Grades',
             content = Label(text=grades),
             size_hint=(.5,.5), size=(100, 100)
         )
@@ -95,7 +118,18 @@ def popUp(mode, extra_info=None):
     elif mode.value == 8:
         info = 'INFO'
         show = successDataChange()
+    elif mode.value == 9:
+        info = 'ERRO'
+        show = errorUserDoesNotExist()
+    elif mode.value == 10:
+        info = 'ERRO'
+        show = errorInvalidStudentNumber()
+    elif mode.value == 11:
+        info = 'ERRO'
+        show = erorrInvalidCourseName()
+    elif mode.value == 12:
+        info = 'INFO'
+        show = successGradeAddition()
 
-    window = Popup(title = info, content = show,
-                   size_hint = (0.5, 0.4)) 
+    window = Popup(title = info, content = show, size_hint = (0.5, 0.4))
     window.open()

@@ -50,7 +50,7 @@ class Teachers_Table:
     def search_by_app_login(self, app_login):
         print('Search by App_login')
         cursor = self.db.cursor();
-        cursor.execute('select * from Students where App_login = ?', app_login)
+        cursor.execute('select * from Teachers where App_login = ?', app_login)
         result = []
         for row in cursor:
             result.append(f'{row}')

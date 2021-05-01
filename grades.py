@@ -3,7 +3,7 @@ class Grades_Table:
         self.db = db
 
     def read_all(self):
-        cursor = self.db.cursor();
+        cursor = self.db.cursor()
         cursor.execute('select * from Grades')
         result = []
         for row in cursor:
@@ -11,7 +11,7 @@ class Grades_Table:
         return result
 
     def search_by_course_name(self, course_name):
-        cursor = self.db.cursor();
+        cursor = self.db.cursor()
         cursor.execute('select * from Grades where Course_Name = ?', course_name)
         result = []
         for row in cursor:
@@ -19,7 +19,7 @@ class Grades_Table:
         return result
 
     def search_by_student_pesel(self, student_pesel):
-        cursor = self.db.cursor();
+        cursor = self.db.cursor()
         cursor.execute('select * from Grades where Student_Pesel = ?', student_pesel)
         result = []
         for row in cursor:
