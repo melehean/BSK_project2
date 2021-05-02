@@ -24,6 +24,7 @@ class PopUpMode(enum.Enum):
     ERROR_INVALID_STUDENT_NUMBER = 10
     ERROR_INVALID_COURSE_NAME = 11
     SUCCES_GRADE_ADDITION = 12
+    ERROR_GRADE_ALREADY_GRANTED = 13
 
 # Classes required in order to define their layout in ApplicationLayout.kv file
 class errorInvalidInformation(FloatLayout): 
@@ -65,6 +66,8 @@ class erorrInvalidCourseName(FloatLayout):
 class successGradeAddition(FloatLayout):
     pass
 
+class errorGradeAlreadyGranted(FloatLayout):
+    pass
 
 # Handle showing currently logged student
 def currentUserInfo():
@@ -83,6 +86,15 @@ def show_grades(grades):
     popup = Popup(
             title ='Grades',
             content = Label(text=grades),
+            size_hint=(.5,.5), size=(100, 100)
+        )
+    popup.open()
+
+
+def invalid_query_error(error):
+    popup = Popup(
+            title ='Invalid query',
+            content = Label(text=error),
             size_hint=(.5,.5), size=(100, 100)
         )
     popup.open()
@@ -122,14 +134,16 @@ def popUp(mode, extra_info=None):
         info = 'ERRO'
         show = errorUserDoesNotExist()
     elif mode.value == 10:
-        info = 'ERRO'
+        info = 'ERROR'
         show = errorInvalidStudentNumber()
     elif mode.value == 11:
-        info = 'ERRO'
+        info = 'ERROR'
         show = erorrInvalidCourseName()
     elif mode.value == 12:
         info = 'INFO'
         show = successGradeAddition()
-
+    elif mode.value == 13:
+        info = 'INFO'
+        show = errorGradeAlreadyGranted()
     window = Popup(title = info, content = show, size_hint = (0.5, 0.4))
     window.open()

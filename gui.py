@@ -76,7 +76,12 @@ class signupScreen(Screen):
 class StudentScreen(Screen):
     # Show currently logged student's information (name, surname, pesel)
     def show_student_info(self):
-        backend.get_student_data()
+        result = backend.get_student_data()
+        if result == pop_ups.PopUpMode.SUCCESS:
+            pop_ups.currentUserInfo()
+        else:
+            pop_ups.popUp(result)
+            self.logout()
 
     # Show list of all students (open list additionally in separate notepad
     # window and save list in *.txt file)
@@ -108,7 +113,6 @@ class StudentDataScreen(Screen):
 
 # Class responsible for handling teacher's menu
 class TeacherScreen(Screen):
-
     # Show currently logged teacher's information (name, surname, pesel, surname)
     def show_teacher_info(self):
         backend.get_teacher_data()
@@ -149,7 +153,6 @@ class AddStudentGradeScreen(Screen):
 # ----------------------- ADMIN'S MENU -----------------------
 
 class AdminScreen(Screen):
-
     # Handle user logout
     def logout(self):
         backend.current_user = backend.User()
@@ -160,40 +163,8 @@ class AdminTypeQueryScreen(Screen):
     query = ObjectProperty(None)
     # Handle typing query directly from text input field and executing it
     def execute_query(self):
-        print('ADMIN - type query')
         backend.execute_query(self.query.text)
 
-
-
-# Class responsible for handling admin choosing query options
-class AdminPanelScreen(Screen):
-    table = ObjectProperty(None)
-    crud_operation = ObjectProperty(None)
-
-    def handle_table_choosing(self, instance, value, chosen_table):
-        if value == True:
-            self.table = chosen_table
-            print(f'Chosen table: {self.table}')
-
-    def handle_CRUD_operation_choosing(self, instance, value, chosen_crud_operation):
-        if value == True:
-            self.crud_operation = chosen_crud_operation
-            print(f'Chosen CRUD operation: {self.crud_operation}')
-    
-    def submit(self):
-        if self.table and self.crud_operation:
-            execute = f'{self.crud_operation}_{self.table}'
-            print(f'Chosen configuration = {execute}')
-
-            # TODO:
-            # Handle showing new screen depending on chosen configuration
-            # execute query/show/delete etc.
-            # screen_manager.current = 
-
-    def logout(self):
-        backend.current_user = backend.User()
-        screen_manager.current = 'role_login_screen'
-        popUp(PopUpMode.SUCCESS_LOGOUT)
 
 
 # ----------------------- APPLICATION LAYOUT -----------------------
@@ -216,7 +187,6 @@ screen_manager.add_widget(signupScreen(name='signup_screen'))
 screen_manager.add_widget(StudentScreen(name='student_screen'))
 screen_manager.add_widget(StudentDataScreen(name='student_data_screen'))
 screen_manager.add_widget(TeacherScreen(name='teacher_screen'))
-screen_manager.add_widget(AdminPanelScreen(name='admin_panel_screen'))
 screen_manager.add_widget(StudentsGradesScreen(name='students_grades_screen'))
 screen_manager.add_widget(AddStudentGradeScreen(name='add_student_grade_screen'))
 screen_manager.add_widget(AdminScreen(name='admin_screen'))

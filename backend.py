@@ -1,9 +1,10 @@
 # External imports
-import pandas as pd
-import os
-import time
 from datetime import datetime
+import pandas as pd
 import webbrowser
+import pyodbc
+import time
+import os
 
 # Internal imports
 from students import Students_Table
@@ -34,7 +35,7 @@ class User():
 
     def user_data(self):
         text = f'Name: {self.name}\nSurname: {self.surname}'
-        text = f'{text}\nPesel: {self.pesel[:-5]}*****' if self.role == 'Student' else text
+        text = f'{text}\nPesel: {self.pesel}' if self.role == 'Student' else text
         text = f'{text}\nDegree: {self.degree}' if self.role == 'Teacher' else text
         return text
 
@@ -50,17 +51,17 @@ class User():
 # Getting 'database' of users - Admins, Student, Teachers
 current_user = User()
 
-admins_data_path = 'admins.csv'
+admins_data_path = 'Users/admins.csv'
 admins = pd.read_csv(admins_data_path,usecols=['Login','Password'])
 admins_logins_list = list(admins['Login'])
 admins_pwds_list = list(admins['Password'])
 
-students_data_path = 'students.csv'
+students_data_path = 'Users/students.csv'
 students = pd.read_csv(students_data_path,usecols=['Login','Password'])
 students_logins_list = list(students['Login'])
 students_pwds_list = list(students['Password'])
 
-teachers_data_path = 'teachers.csv'
+teachers_data_path = 'Users/teachers.csv'
 teachers = pd.read_csv(teachers_data_path,usecols=['Login','Password'])
 teachers_logins_list = list(teachers['Login'])
 teachers_pwds_list = list(teachers['Password'])
@@ -130,11 +131,9 @@ def get_student_data():
         current_user.pesel = user[0]
         current_user.name = user[1]
         current_user.surname = user[2]
-        pop_ups.currentUserInfo()
+        return pop_ups.PopUpMode.SUCCESS
     else:
-        print('User does not exist')
-        pop_ups.popUp(pop_ups.PopUpMode.ERROR_USER_DOES_NOT_EXIST)
-        gui.StudentScreen().logout()
+        return pop_ups.PopUpMode.ERROR_USER_DOES_NOT_EXIST
 
 # Handle student's surname update
 def update_student_data(surname):
@@ -150,6 +149,7 @@ def update_student_data(surname):
 
 # Return list of all registered in database studetns
 def show_students():
+    get_student_data()
     db = connection.connect_to_db()
     students = Students_Table(db).read_all()
     students_list = f'LIST OF STUDENTS - STATE ON {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}\n'
@@ -161,28 +161,31 @@ def show_students():
         iterator += 1
 
     current_directory = os.getcwd()
-    students_list_file = f'{current_directory}/students_list.txt'
+    students_list_file = f'{current_directory}/Queries_results/students_list.txt'
     f = open(students_list_file, "w+")
     f.write(students_list)
-    time.sleep(1)
     webbrowser.open(students_list_file)
 
 # Handle showing student's grade showup
 def show_grades(pesel):
+    get_student_data()
     db = connection.connect_to_db()
     grades = Grades_Table(db).search_by_student_pesel(pesel)
+    students = Students_Table(db).read_all()
     db.close()
 
-    if grades:
-        students_grades = f'Student <{pesel[:-5]}*****> scored:\n'
-        for g in grades:
-            grade_info = g.replace('(\'', '').replace(')', '').replace('\'', '').split(", ")
-            print(grade_info)
-            students_grades += f'{grade_info[1]} -> {grade_info[2]}/5\n'
+    if f'\'{pesel}\'' in str(students):
+        if grades:
+            students_grades = f''
+            for g in grades:
+                grade_info = g.replace('(\'', '').replace(')', '').replace('\'', '').split(", ")
+                students_grades += f'{grade_info[1]} -> {grade_info[2]}\n'
 
-        pop_ups.show_grades(students_grades)
-    else:   # no grades yet
-        pop_ups.show_grades(f'Student <{pesel[:-5]}*****> has got\nno grades yet')
+            pop_ups.show_grades(students_grades)
+        else:   # no grades yet
+            pop_ups.show_grades(f'Student <{pesel}> has got\nno grades yet')
+    else:
+        pop_ups.popUp(pop_ups.PopUpMode.ERROR_USER_DOES_NOT_EXIST)
 
 
 # ----------------------- TEACHER'S MENU -----------------------
@@ -200,19 +203,25 @@ def get_teacher_data():
         current_user.degree = user[3]
         pop_ups.currentUserInfo()
     else:
-        print('User does not exist')
         pop_ups.popUp(pop_ups.PopUpMode.ERROR_USER_DOES_NOT_EXIST)
         gui.TeacherScreen().logout()
 
+# Handle 'Add grade' button click
 def add_grade(pesel, course_name, grade):
     db = connection.connect_to_db()
     students = Students_Table(db).read_all()
     courses = Courses_Table(db).read_all()
 
-    if pesel in str(students):
-        if course_name in str(courses):
-            Grades_Table(db).insert(pesel, course_name, grade)
-            pop_ups.popUp(pop_ups.PopUpMode.SUCCES_GRADE_ADDITION)
+    # Check student pesel and course name correctness
+    if f'\'{pesel}\'' in str(students):
+        if f'\'{course_name}\'' in str(courses):
+            # Check if student already hasn't got a grade from this course
+            result = execute(f'SELECT * FROM Grades WHERE Student_pesel = {pesel};')  # AND Course_Name = {course_name};')
+            if course_name not in str(result):
+                Grades_Table(db).insert(pesel, course_name, grade)
+                pop_ups.popUp(pop_ups.PopUpMode.SUCCES_GRADE_ADDITION)
+            else:
+                pop_ups.popUp(pop_ups.PopUpMode.ERROR_GRADE_ALREADY_GRANTED)
         else:
             pop_ups.popUp(pop_ups.PopUpMode.ERROR_INVALID_COURSE_NAME)
     else:
@@ -220,39 +229,51 @@ def add_grade(pesel, course_name, grade):
     
     db.close()
 
+
 # ----------------------- ADMIN'S MENU -----------------------
 
+# Handle 'Execute query' button click
 def execute_query(query):
+    try:
+        # Get and split query result
+        query_result = execute(query)
+        query_result = extract_query_result(query, query_result)
+
+        # Prepare file for query result
+        current_directory = os.getcwd()
+        date = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+        query_result_file = f'{current_directory}/Queries_results/query_result_{date}.txt'
+        f = open(query_result_file, "w+")
+        f.write(query_result)
+        webbrowser.open(query_result_file)
+    except (pyodbc.ProgrammingError, pyodbc.Error) as error:
+        # Show popup with sufficient error comming from DB
+        pop_ups.invalid_query_error(splitAt(str(error), 49))
+
+# Execute given query directly on database
+def execute(operation):
     db = connection.connect_to_db()
-    query_result = execute(db, query)
-    db.close()
-
-    result = extract_query_result(query, query_result)
-
-    current_directory = os.getcwd()
-    date = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-    query_result_file = f'{current_directory}/query_result_{date}.txt'
-    f = open(query_result_file, "w+")
-    f.write(result)
-    time.sleep(1)
-    webbrowser.open(query_result_file)
-
-
-def execute(db, operation):
     cursor = db.cursor()
     cursor.execute(operation)
     result = []
     for row in cursor:
-        result.append(f'{row}')
+        result.append(f'{row}\t')
+    db.close()
     return result
 
-
+# Split query result
 def extract_query_result(query, query_result):
-    result = f'QUERY:\n{query}\n\nRESULT:\n'
-    for row in query_result:
-        row = row.replace('(','').replace(')','').replace('\'','').split(', ')
-        for element in row:
-            result += f'{element} '
-        result += f'\n'
-    
+    result = f'QUERY:\n{query}\n------------------------------\nRESULT:\n'
+    if query_result:
+        for row in query_result:
+            row = row.replace('(','').replace(')','').replace('\'','').split(', ')
+            for element in row:
+                result += f'{element} '
+            result += f'\n'
+    else:
+        result += '<empty query result>'
     return result
+
+# Split string 'text' on each 'n'characters with '\n'
+def splitAt(text, n):
+    return '\n'.join([text[i:i+n] for i in range(0, len(text), n)])

@@ -6,7 +6,6 @@ ScreenManager:
     signupScreen: 
     StudentScreen:
     TeacherScreen:
-    AdminPanelScreen:
     StudentDataScreen:
     StudentsGradesScreen:
     AddStudentGradeScreen:
@@ -325,7 +324,6 @@ ScreenManager:
             pos_hint : {"x" : 0.55, "top" : 0.35}
             on_press :
                 root.add_grade()
-                app.root.current = 'teacher_screen'
                 root.manager.transition.direction = "right"
 
 <AdminScreen>:
@@ -378,81 +376,6 @@ ScreenManager:
             on_press :
                 root.execute_query()
                 root.manager.transition.direction = "right"
-
-
-<AdminPanelScreen>:
-    GridLayout:
-        cols: 4
-
-        Label:
-            id : info
-            text : "Choose table:"
-        Label:
-            id : info
-            text : " "
-        Label:
-            id : info
-            text : "Choose CRUD operation:"
-        Label:
-            id : info
-            text : " "
-        Label:
-            text: "Students"
-        CheckBox:
-            group: "table"
-            on_press: root.handle_table_choosing(self, self.active, "Students")
-        Label:
-            text: "Create"
-        CheckBox:
-            group: "crud"
-            on_press: root.handle_CRUD_operation_choosing(self, self.active, "Create")
-        Label:
-            text: "Teachers"
-        CheckBox:
-            group: "table"
-            on_press: root.handle_table_choosing(self, self.active, "Teachers")
-        Label:
-            text: "Read"
-        CheckBox:
-            group: "crud"
-            on_press: root.handle_CRUD_operation_choosing(self, self.active, "Read")
-        Label:
-            text: "Courses"
-        CheckBox:
-            group: "table"
-            on_press: root.handle_table_choosing(self, self.active, "Courses")
-        Label:
-            text: "Update"
-        CheckBox:
-            group: "crud"
-            on_press: root.handle_CRUD_operation_choosing(self, self.active, "Update")
-        Label:
-            text: "Grades"
-        CheckBox:
-            group: "table"
-            on_press: root.handle_table_choosing(self, self.active, "Grades")
-        Label:
-            text: "Delete"
-        CheckBox:
-            group: "crud"
-            on_press: root.handle_CRUD_operation_choosing(self, self.active, "Delete")
-                
-        Button:
-            text : "LOGOUT"
-            on_release:
-                root.logout()
-                root.manager.transition.direction = "right"
-        Label:
-            id : info
-            text : " "
-        Label:
-            id : info
-            text : " "
-        Button:
-            text : "OK"
-            on_release:
-                root.submit()
-                root.manager.transition.direction = "left"
 
 <errorInvalidInformation>:
     Label: 
@@ -510,7 +433,7 @@ ScreenManager:
 
 <errorUserDoesNotExist>:
     Label:
-        text : "User with this login does not exist\nin database. Logging out .."
+        text : "User with this login does not exist\nin database."
         size_hint : 0.1, 0.1
         pos_hint : {"x" : 0.3, "top" : 0.5}
 
@@ -529,5 +452,11 @@ ScreenManager:
 <successGradeAddition>:
     Label:
         text : "Grade added successfully!"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<errorGradeAlreadyGranted>:
+    Label:
+        text : "This student already has got a grade\nfrom this course!"
         size_hint : 0.1, 0.1
         pos_hint : {"x" : 0.3, "top" : 0.5}
