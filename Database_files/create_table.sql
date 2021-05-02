@@ -3,14 +3,16 @@ USE [university];
 CREATE TABLE Students (
 Pesel VARCHAR(11) PRIMARY KEY,
 Name VARCHAR(64),
-Surname VARCHAR(64)
+Surname VARCHAR(64),
+App_login VARCHAR(64)
 );
 
 CREATE TABLE Teachers(
 Pesel VARCHAR(11) PRIMARY KEY,
 Name VARCHAR(64),
 Surname VARCHAR(64),
-Degree VARCHAR(16)
+Degree VARCHAR(16),
+App_login VARCHAR(64)
 );
 
 CREATE TABLE Courses(

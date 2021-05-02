@@ -1,0 +1,462 @@
+#:kivy 2.0
+
+ScreenManager:
+    roleLoginScreen:
+    loginScreen: 
+    signupScreen: 
+    StudentScreen:
+    TeacherScreen:
+    StudentDataScreen:
+    StudentsGradesScreen:
+    AddStudentGradeScreen:
+    AdminScreen:
+    AdminTypeQueryScreen:
+
+<roleLoginScreen>:
+    info : info 
+    FloatLayout: 
+        Label: 
+            id : info 
+            size_hint : 0.8, 0.2
+            pos_hint : {"x" : 0.1, "top" : 0.95} 
+            text : "LOG IN AS ..."
+        Button:
+            text : "Student"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.8}
+            on_release:
+                root.click_student()
+                app.root.current = 'login_screen'
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Teacher"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.65}
+            on_release:
+                root.click_teacher()
+                app.root.current = 'login_screen'
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Admin"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.5}
+            on_release:
+                root.click_admin()
+                app.root.current = 'login_screen'
+                root.manager.transition.direction = "left"
+        Label: 
+            id : info 
+            size_hint : 0.8, 0.2
+            pos_hint : {"x" : 0.1, "top" : 0.35} 
+            text : "... OR CREATE AN ACCOUNT"
+        Button: 
+            text : "Create an account"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.2} 
+            on_release:  
+                app.root.current = 'signup_screen'
+                root.manager.transition.direction = "left"
+
+<loginScreen>: 
+    login : login
+    password : password
+    FloatLayout: 
+        size: root.width, root.height 
+        Label: 
+            text : "LOGIN: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.75} 
+        TextInput: 
+            id : login 
+            multiline :False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.75} 
+        Label: 
+            text : "PASSWORD: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.58}
+        TextInput: 
+            id : password
+            multiline :False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.58}
+        Button: 
+            text : "LOGIN"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.39, "top" : 0.35} 
+            on_release:  
+                root.login_btn_clicked()
+                root.manager.transition.direction = "up"
+
+<signupScreen>: 
+    login : login
+    password : password
+    repeat_password : repeat_password
+    role : role
+    FloatLayout: 
+        Label: 
+            text : "NAME: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.9} 
+        TextInput: 
+            id : login
+            multiline : False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.9} 
+        Label: 
+            text : "PASSWORD: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.75} 
+        TextInput: 
+            id : password
+            multiline : False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.75}
+        Label: 
+            text : "REPEAT PASSWORD: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.6} 
+        TextInput: 
+            id : repeat_password 
+            multiline : False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.6}
+        Label: 
+            text : "ROLE: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.45} 
+        TextInput: 
+            id : role 
+            multiline : False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.45}
+        Button: 
+            text : "SUBMIT"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.39, "top" : 0.2} 
+            on_press : 
+                root.create_account_btn_clicked()
+                root.manager.transition.direction = "right"
+
+<StudentScreen>:
+    FloatLayout: 
+        Label: 
+            id : info
+            size_hint : 0.8, 0.2
+            pos_hint : {"x" : 0.1, "top" : 0.95}
+            text : "WELCOME TO STUDENT MENU!"
+        Button:
+            text : "Show your personal information"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.8}
+            on_release:
+                root.show_student_info()
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Edit your personal information"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.65}
+            on_release:
+                app.root.current = 'student_data_screen'
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Show list of all students"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.5}
+            on_release:
+                root.show_students()
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Show grades"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.35}
+            on_release:
+                root.show_grades()
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Logout"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.2}
+            on_release:
+                root.logout()
+                root.manager.transition.direction = "left"
+
+<StudentDataScreen>:
+    new_surname : new_surname
+    FloatLayout:
+        Label:
+            text : 'SURNAME: '
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.8}
+        TextInput:
+            id : new_surname
+            multiline : True
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.8}
+        Button:
+            text : "SAVE CHANGES"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.55, "top" : 0.45}
+            on_press :
+                root.save_student_info()
+                app.root.current = 'student_screen'
+                root.manager.transition.direction = "right"
+        Button:
+            text : "BACK"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.15, "top" : 0.45}
+            on_press :
+                app.root.current = 'student_screen'
+                root.manager.transition.direction = "right"
+
+<TeacherScreen>:
+    FloatLayout: 
+        Label: 
+            id : info
+            size_hint : 0.8, 0.2
+            pos_hint : {"x" : 0.1, "top" : 0.95}
+            text : "WELCOME TO TEACHER MENU!"
+        Button:
+            text : "Show your personal information"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.8}
+            on_release:
+                root.show_teacher_info()
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Show list of all students"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.65}
+            on_release:
+                root.show_students()
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Check student grades"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.5}
+            on_release:
+                app.root.current = 'students_grades_screen'
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Add grade"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.35}
+            on_release:
+                app.root.current = 'add_student_grade_screen'
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Logout"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.2}
+            on_release:
+                root.logout()
+                root.manager.transition.direction = "left"
+
+<StudentsGradesScreen>:
+    student_pesel : student_pesel
+    FloatLayout:
+        Label:
+            text : 'STUDENT PESEL:'
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.8}
+        TextInput:
+            id : student_pesel
+            multiline : True
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.8}
+        Button:
+            text : "SHOW GRADES"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.55, "top" : 0.45}
+            on_press :
+                root.show_student_grades()
+                root.manager.transition.direction = "right"
+        Button:
+            text : "BACK"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.15, "top" : 0.45}
+            on_press :
+                app.root.current = 'teacher_screen'
+                root.manager.transition.direction = "right"
+
+<AddStudentGradeScreen>:
+    pesel : pesel
+    course : course
+    grade : grade
+    FloatLayout:
+        Label:
+            text : "PESEL: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.9}
+        TextInput:
+            id : pesel
+            multiline : False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.9}
+        Label:
+            text : "COURSE NAME: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.75}
+        TextInput:
+            id : course
+            multiline : False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.75}
+        Label:
+            text : "GRADE: "
+            size_hint : 0.2, 0.1
+            pos_hint : {"x" : 0.25, "top" : 0.6}
+        TextInput:
+            id : grade
+            multiline : False
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.45, "top" : 0.6}
+        Button:
+            text : "BACK"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.15, "top" : 0.35}
+            on_press :
+                app.root.current = 'teacher_screen'
+                root.manager.transition.direction = "right"
+        Button:
+            text : "ADD GRADE"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.55, "top" : 0.35}
+            on_press :
+                root.add_grade()
+                root.manager.transition.direction = "right"
+
+<AdminScreen>:
+    FloatLayout:
+        Label: 
+            id : info
+            size_hint : 0.8, 0.2
+            pos_hint : {"x" : 0.1, "top" : 0.95}
+            text : "WELCOME TO ADMIN MENU!"
+        Button:
+            text : "Type query"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.8}
+            on_release:
+                app.root.current = 'admin_type_query'
+                root.manager.transition.direction = "left"
+        Button:
+            text : "Logout"
+            size_hint : 0.4, 0.1
+            pos_hint : {"x" : 0.3, "top" : 0.2}
+            on_release:
+                root.logout()
+                app.root.current = 'role_login_screen'
+                root.manager.transition.direction = "left"
+
+<AdminTypeQueryScreen>:
+    query : query
+    FloatLayout: 
+        Label: 
+            id : info
+            size_hint : 0.15, 0.2
+            pos_hint : {"x" : 0.15, "top" : 0.95}
+            text : "TYPE QUERY:"
+        TextInput:
+            id : query
+            multiline : True
+            size_hint : 0.7, 0.5
+            pos_hint : {"x" : 0.15, "top" : 0.8}
+        Button:
+            text : "BACK"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.15, "top" : 0.25}
+            on_press :
+                app.root.current = 'admin_screen'
+                root.manager.transition.direction = "right"
+        Button:
+            text : "EXECUTE QUERY"
+            size_hint : 0.3, 0.1
+            pos_hint : {"x" : 0.55, "top" : 0.25}
+            on_press :
+                root.execute_query()
+                root.manager.transition.direction = "right"
+
+<errorInvalidInformation>:
+    Label: 
+        text : "Please, enter valid information!"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<successLogIn>:
+    Label:
+        text : "Logged in successfully"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<successSignIn>:
+    Label:
+        text : "Registered successfully :)"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<success>:
+    Label: 
+        text : "Action finished successfully"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<errorUnknownUser>:
+    Label:
+        text : "Please, check your credentials\nand try again"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<errorUserExists>:
+    Label:
+        text : "User with this login exists.\nPlease, choose different login"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<errorInvalidRole>:
+    Label:
+        text : "This role is invalid.\nPlease, type valid role"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<successLogout>:
+    Label:
+        text : "Logout successfully"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<successDataChange>:
+    Label:
+        text : "Data changed successfully"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<errorUserDoesNotExist>:
+    Label:
+        text : "User with this login does not exist\nin database."
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<errorInvalidStudentNumber>:
+    Label:
+        text : "Student with this PESEL does not exist\nin database. Please, try again"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<erorrInvalidCourseName>:
+    Label:
+        text : "Course with this name does not exist\nin database. Please, try again"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<successGradeAddition>:
+    Label:
+        text : "Grade added successfully!"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
+
+<errorGradeAlreadyGranted>:
+    Label:
+        text : "This student already has got a grade\nfrom this course!"
+        size_hint : 0.1, 0.1
+        pos_hint : {"x" : 0.3, "top" : 0.5}
